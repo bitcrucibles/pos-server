@@ -1,4 +1,4 @@
-FROM golang:1.16-alpine3.12 AS builder
+FROM golang:1.19-alpine3.17 AS builder
 RUN apk update
 RUN apk add git go musl-dev make
 COPY ./docker/lspd/.env .
@@ -8,7 +8,7 @@ RUN git clone https://github.com/breez/lspd -b master
 RUN cd lspd \
     && go mod tidy \
     && go build .
-RUN go get github.com/joho/godotenv/cmd/godotenv
+RUN go install github.com/joho/godotenv/cmd/godotenv@latest
 RUN git clone https://github.com/breez/lnd -b fix-subswapper-macaroon
 RUN cd lnd \
     && tage="signrpc walletrpc chainrpc invoicesrpc routerrpc backuprpc peerrpc submarineswaprpc breezbackuprpc" \
