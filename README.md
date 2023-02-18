@@ -33,3 +33,12 @@ The file breez.aar will be built in build/android/
 ./build-ios.sh
 ```
 The bindings.framework will be built in build/ios/
+
+# Running Breez dev environment on simnet
+This article describes how to run breez infra in simnet: https://doc.breez.technology/Running-Breez-in-simnet.html#running-breez-in-simnet
+
+Plus to the above fill in GOOGLE_APPLICATION_CREDENTIALS with Firebase details
+
+Below picture shows interaction of all breez components:
+![BreezComponentsInteraction](https://user-images.githubusercontent.com/124206069/219502847-cd37795d-c4bc-40bc-a8be-e791194c8b19.jpg)
+
