@@ -5,7 +5,7 @@ RUN export tags="experimental signrpc walletrpc chainrpc invoicesrpc routerrpc b
 RUN git clone https://github.com/lightningnetwork/lnd
 ENV tags="experimental signrpc walletrpc chainrpc invoicesrpc routerrpc backuprpc peerrpc submarineswaprpc breezbackuprpc"
 ENV DEV_TAGS="experimental signrpc walletrpc chainrpc invoicesrpc routerrpc backuprpc peerrpc submarineswaprpc breezbackuprpc"
-RUN cd lnd && go mod tidy && tags="experimental signrpc walletrpc chainrpc invoicesrpc routerrpc backuprpc peerrpc submarineswaprpc breezbackuprpc" \
+RUN cd lnd && git checkout v0.15.5-beta  && go mod tidy && tags="experimental signrpc walletrpc chainrpc invoicesrpc routerrpc backuprpc peerrpc submarineswaprpc breezbackuprpc" \
     && make install
 
 COPY . /src/breez

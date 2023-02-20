@@ -49,6 +49,7 @@ services:
       context: ../
       dockerfile: docker/alice/Dockerfile
     volumes:
+      - shared:/rpc
       - ${TEST_DIR}/alice_node:/root/.lnd
     ports:
       - 9735:9735

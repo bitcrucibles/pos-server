@@ -5,8 +5,6 @@ import (
 	"os"
 	"path"
 
-	"github.com/lightningnetwork/lnd/signal"
-
 	"github.com/breez/breez/bindings"
 )
 
@@ -42,7 +40,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	err = bindings.Start()
+	err = bindings.Start(nil)
 	if err != nil {
 		fmt.Println("Error in binding.Start", err)
 		os.Exit(1)
@@ -51,7 +49,7 @@ func main() {
 	rpcBinding := &bindings.RPC{}
 	rpcBinding.Start()
 
-	<-signal.ShutdownChannel()
+	//<-signal.ShutdownChannel()
 	fmt.Println("Shutdown requested")
 	os.Exit(0)
 }
