@@ -1,6 +1,6 @@
 FROM golang:1.19-alpine3.17 AS builder
 RUN apk update
-RUN apk add git go musl-dev make
+RUN apk add git go musl-dev make jq
 COPY ./docker/lspd/.env .
 COPY ./docker/lspd/start.sh .
 RUN chmod +x ./start.sh
