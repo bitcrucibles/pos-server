@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"crypto/rand"
+	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
 	"errors"
@@ -528,7 +529,7 @@ func (a *Service) AddInvoice(invoiceRequest *data.AddInvoiceRequest) (paymentReq
 		a.log.Infof("zero-conf fee calculation: lsp fee rate (permyriad): %v (minimum %v), total fees for channel: %v",
 			lspInfo.ChannelFeePermyriad, lspInfo.ChannelMinimumFeeMsat, channelFeesMsat)
 		if amountMsat < channelFeesMsat+1000 {
-			return "", 0, fmt.Errorf("amount should be more than the minimum fees (%v sats)", lspInfo.ChannelMinimumFeeMsat/1000)
+			return "", 0, fmt.Errorf("amount %v should be more than the minimum fees (%v sats)", amountMsat, lspInfo.ChannelMinimumFeeMsat/1000)
 		}
 
 		smallAmountMsat = amountMsat - channelFeesMsat
@@ -1352,12 +1353,19 @@ func (a *Service) registerPayment(paymentHash, paymentSecret []byte, incomingAmo
 		a.log.Infof("hex.DecodeString(%v) error: %v", a.daemonAPI.NodePubkey(), err)
 		return fmt.Errorf("hex.DecodeString(%v) error: %w", a.daemonAPI.NodePubkey(), err)
 	}
+	tag, err := a.generateTag()
+	if err != nil {
+		a.log.Infof("generateTag() error: %v", err)
+		return fmt.Errorf("generateTag() error: %w", err)
+	}
+
 	pi := &lspd.PaymentInformation{
 		PaymentHash:        paymentHash,
 		PaymentSecret:      paymentSecret,
 		Destination:        destination,
 		IncomingAmountMsat: incomingAmountMsat,
 		OutgoingAmountMsat: outgoingAmountMsat,
+		Tag:                tag,
 	}
 	data, err := proto.Marshal(pi)
 
@@ -1382,4 +1390,19 @@ func (a *Service) registerPayment(paymentHash, paymentSecret []byte, incomingAmo
 		return fmt.Errorf("RegisterPayment() error: %w", err)
 	}
 	return nil
+}
+
+func (a *Service) generateTag() (string, error) {
+	h := sha256.Sum256([]byte(a.cfg.LspToken))
+	k := hex.EncodeToString(h[:])
+	obj := map[string]interface{}{
+		"apiKeyHash": k,
+	}
+
+	tag, err := json.Marshal(obj)
+	if err != nil {
+		return "", err
+	}
+
+	return string(tag), nil
 }

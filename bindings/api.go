@@ -24,6 +24,7 @@ import (
 	"github.com/breez/breez/lnnode"
 	breezlog "github.com/breez/breez/log"
 	breezSync "github.com/breez/breez/sync"
+	"github.com/breez/breez/tor"
 	"github.com/btcsuite/btclog"
 	"github.com/golang/protobuf/proto"
 	"github.com/lightningnetwork/lnd/lnrpc"
@@ -179,15 +180,6 @@ func SetBackupEncryptionKey(key []byte, encryptionType string) error {
 	return getBreezApp().BackupManager.SetEncryptionKey(encKey, encryptionType)
 }
 
-func SetBackupTorConfig(torConfig []byte) error {
-	_torConfig := &data.TorConfig{}
-	if err := proto.Unmarshal(torConfig, _torConfig); err != nil {
-		return err
-	}
-	getBreezApp().BackupManager.SetTorConfig(_torConfig)
-	return nil
-}
-
 /*
 Start the lightning client
 */
@@ -328,15 +320,20 @@ func RestoreBackup(nodeID string, encryptionKey []byte) (err error) {
 AvailableSnapshots is part of the binding inteface which is delegated to breez.AvailableSnapshots
 */
 func AvailableSnapshots() (string, error) {
+	Log("Calling Availible Snapshots", "INFO")
 	snapshots, err := getBreezApp().BackupManager.AvailableSnapshots()
 	if err != nil {
-		Log("error in calling AvailableSnapshots: "+err.Error(), "INFO")
+		Log("error in calling AvailableSnapshots: %v"+err.Error(), "INFO")
 		return "", err
+	}
+	if len(snapshots) < 1 {
+		return "", errors.New("empty")
 	}
 	bytes, err := json.Marshal(snapshots)
 	if err != nil {
 		return "", err
 	}
+
 	return string(bytes), nil
 }
 
@@ -981,6 +978,21 @@ func PublishTransaction(tx []byte) error {
 
 func SetTorActive(enable bool) (err error) {
 	return getBreezApp().SetTorActive(enable)
+}
+
+func SetBackupTorConfig(torConfig []byte) error {
+	Log("Calling SetBackupTorConfig on backupmanager", "INFO")
+	_torConfig := &data.TorConfig{}
+	if err := proto.Unmarshal(torConfig, _torConfig); err != nil {
+		return err
+	}
+	config := &tor.TorConfig{
+		Socks:   _torConfig.Socks,
+		Http:    _torConfig.Http,
+		Control: _torConfig.Control,
+	}
+	getBreezApp().BackupManager.SetTorConfig(config)
+	return nil
 }
 
 func GetTorActive() bool {

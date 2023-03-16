@@ -6,6 +6,7 @@ import (
 	"path"
 
 	"github.com/breez/breez/bindings"
+	"github.com/lightningnetwork/lnd/signal"
 )
 
 type breezApp struct{}
@@ -48,8 +49,12 @@ func main() {
 
 	rpcBinding := &bindings.RPC{}
 	rpcBinding.Start()
-
-	//<-signal.ShutdownChannel()
+	i, err := signal.Intercept()
+	if err != nil {
+		fmt.Println("Error in signal.Intercept", err)
+		os.Exit(1)
+	}
+	<-i.ShutdownChannel()
 	fmt.Println("Shutdown requested")
 	os.Exit(0)
 }
