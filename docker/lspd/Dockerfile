@@ -1,6 +1,4 @@
 FROM golang:latest AS builder
-RUN apk update \
-    && apk add git go musl-dev make jq
 COPY ./docker/lspd/.env .
 COPY ./docker/lspd/start.sh .
 RUN chmod +x ./start.sh
