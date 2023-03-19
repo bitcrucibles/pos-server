@@ -43,62 +43,57 @@ Below picture shows interaction of all breez components:
 ![BreezComponentsInteraction](https://user-images.githubusercontent.com/124206069/219502847-cd37795d-c4bc-40bc-a8be-e791194c8b19.jpg)
 
 
-'''
+```
 sudo docker exec dev-breez "/lnd/lncli" -network=simnet getinfo
 
 {
     "version": "0.15.4-beta commit=",
     "commit_hash": "",
     "identity_pubkey": "02add562a76e8ed044fb3dfb565dc94f12e7e52b19e7ed1cf76073ff9c936725e7",
-'''
+```
 
 
-'''
+```
 sudo docker exec dev-btcd /start-btcctl.sh generate 6
-'''
-'''
 sudo docker exec dev-alice "/root/go/bin/lncli" --network simnet newaddress np2wkh
-'''
-
+```
 Alice address: 
-'''
+```
 {
     "address": "rcSP2ujRMWjqaSPDG43CZetXQvqkZAP8Mr"
 }
-'''
+```
 
-'''
+```
 sudo docker exec dev-breez "/lnd/lncli" -network=simnet sendcoins rrEGRsE5mrqgnK1dV3HziAHj4NMA7MpkST 20000000
-'''
-'''
+```
+
 {
     "txid": "d0db9d1acaaab94824d374ce28c92d86b9d588a3fcf1120359d10da43229e5a7"
 }
-'''
+```
 
-'''
+```
 sudo docker exec dev-btcd /start-btcctl.sh generate 6
-'''
+```
 
-'''
+```
 sudo docker exec dev-alice "/root/go/bin/lncli" -network=simnet openchannel --node_key 02add562a76e8ed044fb3dfb565dc94f12e7e52b19e7ed1cf76073ff9c936725e7 --local_amt=1000000 --connect=10.5.0.3:9735 --private
-'''
 
-'''
 {
 	"funding_txid": "1da38f92586fb739d5aa15c2e01bdce375de08b2c6f202007b415ba98cc73f75"
 }
-'''
+```
 
-'''
+```
 sudo docker exec dev-btcd /start-btcctl.sh generate 6
-'''
+```
 
-'''
+```
 sudo docker exec dev-alice "/root/go/bin/lncli" -network=simnet payinvoice -f --pay_req <payment_request>
-'''
+```
 
-'''
+```
 sudo docker exec dev-btcd /start-btcctl.sh generate 6
-'''
+```
 
