@@ -66,7 +66,6 @@ Alice address:
 
 ```
 sudo docker exec dev-breez "/lnd/lncli" -network=simnet sendcoins rrEGRsE5mrqgnK1dV3HziAHj4NMA7MpkST 20000000
-```
 
 {
     "txid": "d0db9d1acaaab94824d374ce28c92d86b9d588a3fcf1120359d10da43229e5a7"
